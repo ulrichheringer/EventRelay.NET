@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+TestResults/
+*.db
+*.db-shm
+*.db-wal
+*.user
+*.nupkg
+artifacts/
