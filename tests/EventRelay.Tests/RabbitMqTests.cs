@@ -6,11 +6,11 @@ namespace EventRelay.Tests;
 
 public sealed class RabbitMqTests
 {
-    [Fact]
+    [RabbitMqFact]
     public async Task ConfirmedPersistentMessageArrivesAndUnroutableMessageFails()
     {
         var uri = Environment.GetEnvironmentVariable("EVENTRELAY_RABBITMQ_URI");
-        if (uri is null) return; // Opt-in locally; CI always supplies a broker.
+        Assert.NotNull(uri);
         await using var connection = await new ConnectionFactory { Uri = new Uri(uri) }.CreateConnectionAsync();
         await using var channel = await connection.CreateChannelAsync();
         var queue = "eventrelay-" + Guid.NewGuid().ToString("N");
@@ -24,5 +24,14 @@ public sealed class RabbitMqTests
         Assert.Equal(DeliveryModes.Persistent, result.BasicProperties.DeliveryMode);
         await Assert.ThrowsAsync<PublishReturnException>(async () => await publisher.PublishAsync(new OutboxMessage { Id = Guid.NewGuid(), Type = queue + "-missing", Payload = "{}" }));
         await channel.QueueDeleteAsync(queue);
+    }
+}
+
+public sealed class RabbitMqFactAttribute : FactAttribute
+{
+    public RabbitMqFactAttribute()
+    {
+        if (Environment.GetEnvironmentVariable("EVENTRELAY_RABBITMQ_URI") is null)
+            Skip = "Set EVENTRELAY_RABBITMQ_URI to run the broker integration test.";
     }
 }

@@ -108,6 +108,6 @@ dotnet test -c Release
 docker stop eventrelay-rabbit
 ```
 
-PowerShell: `$env:EVENTRELAY_RABBITMQ_URI = 'amqp://guest:guest@localhost:5672/'`. Tests cover atomic rollback, save failure/retry, sync saving, active leases, stale ownership, expiry recovery, retry exhaustion, cancellation, bounded non-cooperative publication, confirmed RabbitMQ delivery and unroutable rejection. Without the variable the broker test returns without connecting; CI always sets it.
+PowerShell: `$env:EVENTRELAY_RABBITMQ_URI = 'amqp://guest:guest@localhost:5672/'`. Tests cover atomic rollback, save failure/retry, sync saving, active leases, stale ownership, expiry recovery, retry exhaustion, cancellation, bounded non-cooperative publication, confirmed RabbitMQ delivery and unroutable rejection. Without the variable the broker test is explicitly skipped; CI always sets it.
 
 Contributions should include focused tests and pass the commands above. Report security-sensitive details privately to the repository owner. See [MIT license](LICENSE).
